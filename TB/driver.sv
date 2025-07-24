@@ -1,24 +1,25 @@
 class driver;
     virtual dut_if vif;
-    event drv_done;
     mailbox gen2drv;
 
     task run();
         $display ("T=%0t [DRV] starting ...", $time);
         forever begin
             transaction tr;
-            @(posedge vif.clk);
             gen2drv.get(tr);
             vif.data <= tr.data;
             vif.addr <= tr.addr;
             vif.we <= tr.we;
-            vif.valid <= tr.valid;
+            vif.valid <= 1'b1;
             tr.print("Driver", "Transaction Received");
+            @(posedge vif.clk iff vif.ready);
 
-            if(tr.valid) begin
-                wait(vif.ready);
+            // todo: handle reset case
+            
+            if(tr.delay >0) begin
+                vif.valid <= 1'b0;
+                repeat(tr.delay) @(posedge vif.clk);
             end
-            -> drv_done;
         end
     endtask;
 

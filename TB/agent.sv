@@ -5,24 +5,23 @@ class agent;
     driver drv;
     monitor mon;
     virtual dut_if vif;
+    coverage_collector cov_collector;
 
     function new();
-        this.gen2drv = new();
+        this.gen2drv = new(1);
         this.gen = new();
         this.drv = new();
         this.mon = new();
     endfunction;
 
     function build();
-        gen.gen2drv = gen2drv;
-        drv.gen2drv = gen2drv;
-        mon.mon2scb = mon2scb;
+        gen.gen2drv = this.gen2drv;
+        drv.gen2drv = this.gen2drv;
+        mon.mon2scb = this.mon2scb;
+        mon.cov_collector = this.cov_collector;
 
-        gen.drv_done = drv_done;
-        drv.drv_done = drv_done;
-
-        drv.vif = vif;
-        mon.vif = vif;
+        drv.vif = this.vif;
+        mon.vif = this.vif;
     endfunction;
 
     virtual task run();

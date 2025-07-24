@@ -1,13 +1,14 @@
 class test;
+    string name;
     env e0;
 
-    function new();
+    function new(string n = "basic_test");
+        name = n;
         e0 = new();
     endfunction
 
     virtual task run();
         TestRegistry::set_int("NoOfTransactions", 1000);
-
         fork
             e0.run();
         join_none

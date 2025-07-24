@@ -2,44 +2,48 @@ class generator;
     mailbox gen2drv;
     transaction tr;
     transaction temp;
-    event drv_done;
     int addr;
+    bin active;
 
     function new();
         this.tr = new();
+        this.active = 1;
     endfunction;
 
     virtual task run();
-    int count = TestRegistry::get_int("NoOfTransactions");
-    repeat (count) begin
-        write();
-        read();
+    if(active)begin
+        int count = TestRegistry::get_int("NoOfTransactions");
+        repeat (count) begin
+            randomize_transaction();
+            write();
+            read();
+        end
     end
     endtask;
 
-    virtual task write();
-        assert (tr.randomize() with {we == 1'b1;}) else begin
-            $display("[Gem] Randomization failed for write transaction");
+    task randomize_transaction();
+        assert (tr.randomize()) else begin
+            $error("[Gen] Randomization failed for transaction");
             return;
         end
+    endtask;
+
+    virtual task write();
+        tr.we = 1'b1; 
         tmp = new();
         tmp.copy(tr);
         tmp.print("Generator", "Write Transaction");
         addr = tr.addr;
         gen2drv.put(tmp);
-        @drv_done;
     endtask;
 
+
     virtual task read();
-        assert (tr.randomize() with {we == 1'b0; addr == addr }) else begin
-            $display("[Gem] Randomization failed for read transaction");
-            return;
-        end
+        tr.we = 1'b0;
         tmp = new();
         tmp.copy(tr);
         tmp.print("Generator", "Read Transaction");
         gen2drv.put(tmp);
-        @drv_done;
     endtask;
 
 endclass : generator
