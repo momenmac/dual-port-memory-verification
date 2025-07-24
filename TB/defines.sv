@@ -1,0 +1,2 @@
+`define MEMORY_SIZE 64
+`define MEMORY_WIDTH 8

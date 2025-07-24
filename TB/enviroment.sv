@@ -1,0 +1,3 @@
+class enviroment
+
+endclass : enviroment
