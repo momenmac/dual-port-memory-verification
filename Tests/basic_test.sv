@@ -1,18 +1,30 @@
+import project_pkg::*;
+
 class test;
     string name;
     env e0;
 
     function new(string n = "basic_test");
-        name = n;
+        this.name = n;
         e0 = new();
     endfunction
 
     virtual task run();
-        TestRegistry::set_int("NoOfTransactions", 1000);
+
+        configure_test();
+        e0.build();
+
+
         fork
             e0.run();
-        join_none
-        #1000;
-        e0.report_coverage();
+        join
+        #1000 $finish;
+      
+      
+//         e0.report_coverage();
     endtask
-endclass
+
+    virtual task configure_test();
+      
+    endtask
+endclass;

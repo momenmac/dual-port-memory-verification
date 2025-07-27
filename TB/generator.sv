@@ -1,49 +1,57 @@
+`include "defines.sv"
 class generator;
+  	string port_name;
     mailbox gen2drv;
     transaction tr;
-    transaction temp;
+    transaction tmp;
     int addr;
-    bin active;
-
-    function new();
+    generator_state state;
+    
+  	function new(string port_name = "");
+      	this.port_name= port_name;
         this.tr = new();
-        this.active = 1;
-    endfunction;
+        this.state = ENABLED;
+    endfunction
+
+    virtual function void configure_generator(generator_state state = ENABLED);
+        this.state = state;
+    endfunction
 
     virtual task run();
-    if(active)begin
+    if(state == ENABLED)begin
         int count = TestRegistry::get_int("NoOfTransactions");
+      $display("%d : numeber of transactions", count);
         repeat (count) begin
             randomize_transaction();
             write();
             read();
         end
     end
-    endtask;
+    endtask
 
     task randomize_transaction();
         assert (tr.randomize()) else begin
             $error("[Gen] Randomization failed for transaction");
             return;
         end
-    endtask;
+    endtask
 
     virtual task write();
         tr.we = 1'b1; 
         tmp = new();
         tmp.copy(tr);
-        tmp.print("Generator", "Write Transaction");
+      	tmp.print(port_name,"Generator", "Write Transaction");
         addr = tr.addr;
         gen2drv.put(tmp);
-    endtask;
+    endtask
 
 
     virtual task read();
         tr.we = 1'b0;
         tmp = new();
         tmp.copy(tr);
-        tmp.print("Generator", "Read Transaction");
+      tmp.print(port_name,"Generator", "Read Transaction");
         gen2drv.put(tmp);
-    endtask;
+    endtask
 
 endclass : generator

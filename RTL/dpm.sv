@@ -1,3 +1,4 @@
+// Code your design here
 module dpram
   (
     input [7:0] data_a, data_b,
@@ -41,8 +42,8 @@ module dpram
     end
  
     // Port B
-    always @(posedge clk or posedge rst_n) begin
-        if (rst_n) begin
+  always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
             q_b <= 8'b0;
         end else if (trans_b) begin  // Only process when handshake complete
             if (we_b) begin

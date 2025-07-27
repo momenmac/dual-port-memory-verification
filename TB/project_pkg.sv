@@ -3,9 +3,10 @@ package project_pkg;
     `include "transaction.sv"
     `include "test_registry.sv"
     `include "driver.sv"
-    `include "coverage.sv" // coverage_collector must be included before monitor.sv
+//     `include "coverage.sv"
     `include "monitor.sv"
     `include "scoreboard.sv"
     `include "generator.sv"
+    `include "agent.sv"
     `include "enviroment.sv"
 endpackage

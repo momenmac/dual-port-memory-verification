@@ -1,7 +1,7 @@
 module tb;
     logic clk;
     logic rst_n;
-    string test_case_string;
+    string argv;
 
     dut_if port_a_interface(clk, rst_n);
     dut_if port_b_interface(clk, rst_n);
@@ -34,18 +34,37 @@ module tb;
         repeat (5) @(posedge clk);
         rst_n = 1'b1;
     endtask
+  
+  initial begin
+          $dumpfile("dump.vcd"); $dumpvars;
+
+  end
 
     initial begin
-        test_name test_case;
+        string test_name;
         test t;
+      	int NoOfTransactions = 10;
 
-        if($value$plusargs("test=%s", test_case_string)) begin
-            test_case = test_name'(test_case_string);
-            $display("Running test case: %s", test_case.name());
+      if($value$plusargs("test=%s", argv)) begin
+        $display("argv = %s", argv);
+            test_name = argv;
         end else begin
             $display("No test case specified, running default test.");
-            test_case = write_read_a;
+            test_name = "write_read_a";
         end
+      
+      if($value$plusargs("NoTransactions=%s", argv))
+        NoOfTransactions = argv.atoi();
+        
+        
+        TestRegistry::set_int("NoOfTransactions", NoOfTransactions);
+
+      	t = test_factory::create_test(test_name);
+      
+        t.e0.vif_a = port_a_interface;
+        t.e0.vif_b = port_b_interface;
+
+        t.run();
     end
 
 endmodule : tb
