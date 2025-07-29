@@ -41,6 +41,6 @@ class agent;
             mon.run();
             drv.run();
         join_any
-      $display("%s agent ended :**************************** [%t] ",port_name, $time);
+      $display("{%s} agent ended :**************************** [%t] ",port_name, $time);
     endtask
 endclass : agent

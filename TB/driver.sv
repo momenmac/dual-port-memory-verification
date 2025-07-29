@@ -2,7 +2,8 @@ class driver;
   	string port_name;
     virtual dut_if vif;
     mailbox gen2drv;
-  
+    int index = 0;
+
     function new (string port_name = "");
       this.port_name = port_name;
     endfunction
@@ -16,24 +17,27 @@ class driver;
             vif.addr <= tr.addr;
             vif.we <= tr.we;
             vif.valid <= 1'b1;
-          tr.print(port_name,"Driver", "Transaction Received");
+          tr.print(port_name,"Driver", "Transaction Received", index);
+          if(!tr.we)
+            index++;
             @(posedge vif.clk iff  vif.ready);
 
 
             
             // handle delays and reset
-            if(tr.delay >0) begin
-                vif.valid <= 1'b0;
                 fork
                     begin
-                        repeat(tr.delay) @(posedge vif.clk);
+                      repeat(tr.delay) begin
+						vif.valid <= 1'b0;
+                        @(posedge vif.clk);
+                      end
                     end
                     begin
                         @(negedge vif.rst_n);
+						vif.valid <= 1'b0;
                     end
                 join_any
                 disable fork;
-            end
         end
     endtask
 

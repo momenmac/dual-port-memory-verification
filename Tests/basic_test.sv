@@ -18,10 +18,12 @@ class test;
         fork
             e0.run();
         join
-        #1000 $finish;
+        #25;
+      	 e0.report_coverage();
+      $finish;
       
       
-//         e0.report_coverage();
+       
     endtask
 
     virtual task configure_test();

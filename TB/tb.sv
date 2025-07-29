@@ -44,13 +44,14 @@ module tb;
         string test_name;
         test t;
       	int NoOfTransactions = 10;
+      	rst_n = 1'b0;
 
       if($value$plusargs("test=%s", argv)) begin
         $display("argv = %s", argv);
             test_name = argv;
         end else begin
             $display("No test case specified, running default test.");
-            test_name = "write_read_a";
+            test_name = "default";
         end
       
       if($value$plusargs("NoTransactions=%s", argv))
@@ -63,7 +64,9 @@ module tb;
       
         t.e0.vif_a = port_a_interface;
         t.e0.vif_b = port_b_interface;
-
+      
+      	repeat (5) @(posedge clk);
+      	system_reset();
         t.run();
     end
 

@@ -26,6 +26,7 @@ class env;
 
         scb_inst.mon2scb_a = this.mon2scb_a;
         scb_inst.mon2scb_b = this.mon2scb_b;
+      	scb_inst.vif = vif_a;
 
 //         agent_a.cov_collector = this.cov_collector;
 //         agent_b.cov_collector = this.cov_collector;

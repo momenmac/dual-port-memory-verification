@@ -1,8 +1,9 @@
 class transaction;
     rand bit [`MEMORY_WIDTH-1:0] data;
-    randc bit [$clog2(`MEMORY_SIZE)-1:0] addr;
+    rand bit [$clog2(`MEMORY_SIZE)-1:0] addr;
     rand bit we;
     rand int delay; // Delay in clock cycles 
+  
   
   constraint delay_constraint { delay < 10; delay >0;}
     
@@ -13,8 +14,8 @@ class transaction;
         this.delay = t.delay;
     endfunction
 
-  function void print( string port_name = "",string tag = "" , string description = "");
-    $display("{%s} %t [%s] %s:\tdata=%h,\taddr=%h,    we=%b,    delay=%d", port_name,$time, tag, description, data, addr, we, delay);
+  function void print( string port_name = "",string tag = "" , string description = "", int index = 0);
+    $display("{%s} %t [%s][%0d]\t %s:\tdata=%h,\taddr=%h,    we=%b,    delay=%d", port_name,$time, tag,index, description, data, addr, we, delay);
     endfunction
 
 endclass : transaction

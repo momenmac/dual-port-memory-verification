@@ -6,6 +6,7 @@ class generator;
     transaction tmp;
     int addr;
     generator_state state;
+    int index = 0;
     
   	function new(string port_name = "");
       	this.port_name= port_name;
@@ -25,6 +26,7 @@ class generator;
             randomize_transaction();
             write();
             read();
+            index++;
         end
     end
     endtask
@@ -40,9 +42,10 @@ class generator;
         tr.we = 1'b1; 
         tmp = new();
         tmp.copy(tr);
-      	tmp.print(port_name,"Generator", "Write Transaction");
+        tmp.print(port_name,"Generator", "Write Transaction", index);
         addr = tr.addr;
         gen2drv.put(tmp);
+
     endtask
 
 
@@ -50,7 +53,7 @@ class generator;
         tr.we = 1'b0;
         tmp = new();
         tmp.copy(tr);
-      tmp.print(port_name,"Generator", "Read Transaction");
+        tmp.print(port_name,"Generator", "Read Transaction", index);
         gen2drv.put(tmp);
     endtask
 

@@ -2,6 +2,7 @@ class monitor;
   	string port_name;
     virtual dut_if vif;
     mailbox mon2scb;
+    int index = 0;
 //     coverage_collector cov_collector;
   
     function new (string port_name = "");
@@ -18,10 +19,11 @@ class monitor;
 
                 if(vif.we) begin
                     tr.data = vif.data;
-                    tr.print(port_name,"Monitor", "Transaction (Write)");
+                    tr.print(port_name,"Monitor", "Transaction (Write)", index);
                 end else begin
                     tr.data = vif.q; // Read operation, data is not used
-                    tr.print(port_name,"Monitor", "Transaction (Read)");
+                    tr.print(port_name,"Monitor", "Transaction (Read)", index);
+					index++;
                 end
 
                 mon2scb.put(tr);

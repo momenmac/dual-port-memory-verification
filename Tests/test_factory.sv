@@ -6,6 +6,7 @@ class test_factory;
     case(test_name)
           "write_read_a": t = write_read_a_test::new();
           "write_read_b": t = write_read_b_test::new();
+      	  "write_a_read_b": t = write_a_read_b_test::new();
             
             default: t= new();
         endcase
