@@ -1,6 +1,6 @@
-class  write_a_read_b_test extends test;
-    write_a_read_b_generator_a gen_a;
-    write_a_read_b_generator_b gen_b;
+class  write_b_read_a_test extends test;
+    write_b_read_a_generator_a gen_a;
+    write_b_read_a_generator_b gen_b;
   	bit [$clog2(`MEMORY_SIZE) - 1:0] addr_q [$];
   	int addr;
     int counter = 0;
@@ -13,7 +13,7 @@ class  write_a_read_b_test extends test;
     endfunction
 
     virtual task configure_test();
-        counter = TestRegistry::get_int("NoOfTransactions");
+      	counter = TestRegistry::get_int("NoOfTransactions");
       	repeat (counter) begin
             addr = $urandom_range(0, `MEMORY_SIZE - 1);
             addr_q.push_back(addr);

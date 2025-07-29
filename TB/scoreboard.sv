@@ -21,7 +21,7 @@ class scb;
   task run();
     $display("SCB is running");
 
-
+    forever begin
     fork
       begin
         forever begin
@@ -50,7 +50,9 @@ class scb;
         reset();
         $display("SCB reset complete");
       end
-    join
+    join_any
+    disable fork;
+    end
   endtask
     
   function void report_statistics();

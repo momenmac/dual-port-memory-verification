@@ -2,6 +2,7 @@ module tb;
     logic clk;
     logic rst_n;
     string argv;
+  	event reset_event;
 
     dut_if port_a_interface(clk, rst_n);
     dut_if port_b_interface(clk, rst_n);
@@ -61,6 +62,7 @@ module tb;
         TestRegistry::set_int("NoOfTransactions", NoOfTransactions);
 
       	t = test_factory::create_test(test_name);
+      	t.e0.reset_event = reset_event;
       
         t.e0.vif_a = port_a_interface;
         t.e0.vif_b = port_b_interface;
@@ -69,5 +71,13 @@ module tb;
       	system_reset();
         t.run();
     end
+
+  initial
+  	forever
+      begin
+        @(reset_event);
+        system_reset();
+    end
+
 
 endmodule : tb
