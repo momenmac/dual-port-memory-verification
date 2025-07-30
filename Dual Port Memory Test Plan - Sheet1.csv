@@ -1,0 +1,67 @@
+Case,Description,Name,Status
+Port A Write Read,"Verify basic write and read operations on port A
+Write random data and address
+Read from the same address
+Verify that read data equals previously written data",write_read_a,Done
+Port B Write Read,"Verify basic write and read operations on port B
+Write random data and address
+Read from the same address
+Verify that read data equals previously written data",write_read_b,Done
+Write port A Read port B,"Ensure data consistency between all the ports
+Write random data to any address via port A
+Read the same address via port B
+The output should be the same as the input",write_a_read_b,Done
+Write port B Read port A,"Ensure data consistency between all the ports
+Write random data to any address via port B
+Read the same address via port A
+The output should be the same input",write_b_read_a,Done
+Write to the same address,"Ensure memory supports overwriting same address
+Write random data on the same address multiple times
+The stored data should change with each write operation",write_same_address,Done
+Empty Memory Read,"Ensure the defaul output of an empty memory
+Read from empty address (never written) 
+Expect output to be zero",empty_mem_read,Done
+Fill all the memory,"Ensure all addresses are accessible 
+Fill all memory locations with data
+Verify all addresses changed to the new value",fill_memory,Done
+Reset Behavior,"Ensure reset functionality works well
+Test reading from memory immediately after reset
+The output should be zero or default value and verify that writes after reset behave as expected",reset_behavior,Pending
+Simultaneous Write Different Ports,"Ensure write operation is independent for each port
+Write random data on different addresses from different ports at the same time
+Both succeed",simultaneous_write,Pending
+Simultaneous Read Different Ports,"Ensure read operation is independent for each port 
+Read random data on different addresses from different ports at the same time
+Both get the right data",simultaneous_read,Pending
+Simultaneous Write Read,"Verify the arbitration logic is valid in write and read at the same time
+Write a random data to an address
+Read the same address at the same time
+Expected to see the new value",read_after_write_same_address,Pending
+Write Collision,"Verify the arbitration logic is valid when different ports write at the same adderess in the same time
+Write to the same address from different ports at the same time
+Check which one wins",write_collision,Pending
+Out of range access,"Verify out of range access handling in memory
+Access a random address out of memory range ( address > MEMORY_SIZE)
+Check if it doesn't corrupt data in other addresses",out_of_range_access,Pending
+Back to Back Writes Port A,"Ensure that memory can handle continuous write operations from port A
+Write random data on random addresses consecutive cycles via port A
+Verify the addresses changed to the new value",back_to_back_writes,Pending
+Back to Back Writes Port B,"Ensure that memory can handle continuous write operations from port B
+Write random data on random addresses consecutive cycles via port B
+Verify the addresses changed to the new value",back_to_back_writes,Pending
+Back to Back Reads Port A,"Ensure that memory can handle continuous read operations from from port A
+Read random data on random addresses consecutive cycles via port A
+It gets the right data",back_to_back_reads,Pending
+Back to Back Reads Port B,"Ensure that memory can handle continuous read operations from port B
+Read random data on random addresses consecutive cycles via port B
+It gets the right data",back_to_back_reads,Pending
+Back to Back Transactions,"Ensure that memory can handle continuous transactions from different ports
+Random operation read or write
+check if the operations were done successfully",back_to_back_transactions,Pending
+Address Boundaries,"Ensure all addresses accessible, no wraparound
+Write/read address MIN_SIZE, MAX_SIZE,",address_boundaries,Pending
+Delays,"Ensure delays won't affect different operations on the memory
+Write data to a random addess
+Wait for a few cycles 
+Read data from the same address
+Read data should match the written one ",delays,Pending
