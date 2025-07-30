@@ -15,7 +15,8 @@ class transaction;
     endfunction
 
   function void print( string port_name = "",string tag = "" , string description = "", int index = 0);
-    $display("{%s} %t [%s][%0d]\t %s:\tdata=%h,\taddr=%h,    we=%b,    delay=%d", port_name,$time, tag,index, description, data, addr, we, delay);
+    if(TestRegistry::get_int("DebugEnabled") == 1)
+      $display("{%s} %t [%s][%0d]\t %s:\tdata=%h,\taddr=%h,    we=%b,    delay=%d", port_name,$time, tag,index, description, data, addr, we, delay);
     endfunction
 
 endclass : transaction

@@ -44,7 +44,10 @@ module tb;
     initial begin
         string test_name;
         test t;
-      	int NoOfTransactions = 10;
+      	int transaction_count = 10;
+        int transaction_delay = 1;
+        int gen_selected = -1;
+        int debug_enabled = 1;
       	rst_n = 1'b0;
 
       if($value$plusargs("test=%s", argv)) begin
@@ -56,10 +59,21 @@ module tb;
         end
       
       if($value$plusargs("NoTransactions=%s", argv))
-        NoOfTransactions = argv.atoi();
-        
-        
-        TestRegistry::set_int("NoOfTransactions", NoOfTransactions);
+        transaction_count = argv.atoi();
+
+      if($value$plusargs("TransactionDelay=%s", argv))
+        transaction_delay = argv.atoi();
+
+      if($value$plusargs("GenSelected=%s", argv))
+        this.gen_selected = argv.atoi();
+
+      if($value$plusargs("DebugEnabled=%s", argv))
+        this.debug_enabled = argv.atoi();
+
+        TestRegistry::set_int("NoOfTransactions", transaction_count);
+        TestRegistry::set_int("TransactionDelay", transaction_delay);
+        TestRegistry::set_int("DebugEnabled", this.debug_enabled);
+        TestRegistry::set_int("GenSelected", this.gen_selected);
 
       	t = test_factory::create_test(test_name);
       	t.e0.reset_event = reset_event;
@@ -71,6 +85,7 @@ module tb;
       	system_reset();
         t.run();
     end
+
 
   initial
   	forever

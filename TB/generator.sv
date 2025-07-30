@@ -57,4 +57,24 @@ class generator;
         gen2drv.put(tmp);
     endtask
 
+    virtual task read_all_memory(int read_delay = -1);
+        for(int i = 0; i < `MEMORY_SIZE; i++) begin
+            randomize_transaction();
+            tr.addr = i;
+            if (read_delay >= 0)
+                tr.delay = read_delay;
+            read();
+        end
+    endtask
+
+    virtual task write_all_memory(int write_delay = -1);
+        for(int i = 0; i < `MEMORY_SIZE; i++) begin
+            randomize_transaction();
+            tr.addr = i;
+            if (write_delay >= 0)
+                tr.delay = write_delay;
+            write();
+        end
+    endtask
+
 endclass : generator
