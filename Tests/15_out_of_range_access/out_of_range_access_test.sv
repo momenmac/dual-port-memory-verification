@@ -1,10 +1,12 @@
-class simultaneous_write_test extends test;
+class out_of_range_access_test extends test;
+
     int gen_selected_read;
 
-    simultaneous_write_gen gen_a;
-    simultaneous_write_gen gen_b;
+    
+    out_of_range_access_gen gen_a;
+    out_of_range_access_gen gen_b;
 
-    function new(string name = "simultaneous_write_test");
+    function new(string name = "out_of_range_access_test");
         super.new(name);
         this.gen_a = new();
         this.gen_b = new();
@@ -24,5 +26,4 @@ class simultaneous_write_test extends test;
         e0.agent_a.set_generator(this.gen_a);
         e0.agent_b.set_generator(this.gen_b);
     endtask
-
 endclass

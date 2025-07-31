@@ -24,8 +24,8 @@ class simultaneous_read_test extends test;
         else 
             gen_b.write_enable = 1;
 
-        env0.agent_a.set_generator(this.gen_a);
-        env0.agent_b.set_generator(this.gen_b);
+        e0.agent_a.set_generator(this.gen_a);
+        e0.agent_b.set_generator(this.gen_b);
     endtask
 
 endclass

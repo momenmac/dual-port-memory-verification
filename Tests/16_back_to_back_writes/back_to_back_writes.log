@@ -1,0 +1,29 @@
+Command: /home/runner/./simv +vcs+lic+wait +test=back_to_back_writes +NoTransactions=50000 -l output.log +DebugEnabled=0
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version U-2023.03-SP2_Full64; Runtime version U-2023.03-SP2_Full64;  Jul 31 08:50 2025
+Test Name: back_to_back_writes
+Transaction Count:       50000
+Transaction Delay:           1
+Generator Selected:          -1
+SCB is running
+{Port B} agent ended :**************************** [                  95] 
+{Port A} agent ended :**************************** [             3442705] 
+==========================
+SCB Statistics:
+Total Passes (Port A): 99152
+Total Failures (Port A): 0
+Pass Rate (Port A): 100.00%
+Total Passes (Port B): 0
+Total Failures (Port B): 0
+Pass Rate (Port B): 0.00%
+Total Transactions: 99152
+Pass Rate: 100.00%
+Fail Rate: 0.00%
+==========================
+$finish called from file "basic_test.sv", line 23.
+$finish at simulation time              3443705
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 3443705 ns
+CPU Time:      5.400 seconds;       Data structure size:   0.0Mb
+Thu Jul 31 08:50:55 2025

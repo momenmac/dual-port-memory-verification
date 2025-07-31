@@ -1,0 +1,48 @@
+Command: /home/runner/./simv +vcs+lic+wait +test=reset_behavior +NoTransactions=11 -l output.log +DebugEnabled=0
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version U-2023.03-SP2_Full64; Runtime version U-2023.03-SP2_Full64;  Jul 31 03:52 2025
+argv = reset_behavior
+SCB is running
+{Port B} agent ended :**************************** [                  95] 
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+SCB reset started
+SCB reset complete
+{Port A} agent ended :**************************** [            52476765] 
+==========================
+SCB Statistics:
+Total Passes (Port A): 540672
+Total Failures (Port A): 0
+Pass Rate (Port A): 100.00%
+Total Passes (Port B): 0
+Total Failures (Port B): 0
+Pass Rate (Port B): 0.00%
+Total Transactions: 540672
+Pass Rate: 100.00%
+Fail Rate: 0.00%
+==========================
+$finish called from file "basic_test.sv", line 23.
+$finish at simulation time             52477765
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 52477765 ns
+CPU Time:     41.280 seconds;       Data structure size:  22.2Mb
+Thu Jul 31 03:53:04 2025

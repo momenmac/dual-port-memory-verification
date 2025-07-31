@@ -41,7 +41,7 @@ Write Collision,"Verify the arbitration logic is valid when different ports writ
 Write to the same address from different ports at the same time
 Check which one wins",write_collision,Pending
 Out of range access,"Verify out of range access handling in memory
-Access a random address out of memory range ( address > MEMORY_SIZE)
+Access a random address out of memory range ( address > MEMORY_DEPTH)
 Check if it doesn't corrupt data in other addresses",out_of_range_access,Pending
 Back to Back Writes Port A,"Ensure that memory can handle continuous write operations from port A
 Write random data on random addresses consecutive cycles via port A

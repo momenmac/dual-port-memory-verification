@@ -7,16 +7,21 @@ class scb;
     int fail_count_a = 0;
     int pass_count_b = 0;
     int fail_count_b = 0;
-    bit [`MEMORY_WIDTH - 1:0] memory [`MEMORY_SIZE - 1:0] = '{default: 0};
+    bit [`DATA_WIDTH - 1:0] memory [`MEMORY_DEPTH - 1:0] = '{default: 0};
     string tag_a;
     string tag_b;
-	virtual dut_if vif;
+	  virtual dut_if vif;
+  	int debug_enabled;
   
     function void reset ();
-        for (int i = 0; i < `MEMORY_SIZE; i++) begin
+      for (int i = 0; i < `MEMORY_DEPTH; i++) begin
             memory[i] <= 0;
         end
     endfunction
+  
+  function new();
+    this.debug_enabled = TestRegistry::get_int("DebugEnabled");
+  endfunction
   
   task run();
     $display("SCB is running");
@@ -47,6 +52,7 @@ class scb;
 
       begin
         @(negedge vif.rst_n);
+        $display("SCB reset started");
         reset();
         $display("SCB reset complete");
       end
@@ -73,29 +79,31 @@ class scb;
   function void check_transaction(transaction tr, ref int pass_count, ref int fail_count,ref int index);
 
 
-      if (tr.addr >= `MEMORY_SIZE) begin
+    if (tr.addr >= `MEMORY_DEPTH) begin
         	$error("Error: Address out of bounds: %0h", tr.addr);
           fail_count++;
           return;
-      end
+    end
 
-      if (tr.we) begin
-          memory[tr.addr] = tr.data;
+    if (tr.we) begin
+      memory[tr.addr] = tr.data;
+      if (debug_enabled)
         $display("Write successful to address %0h with data %0h", tr.addr, tr.data);
-                  index++;
-
-      end else begin
-          index++;
-        assert (memory[tr.addr] == tr.data) begin
+      index++;
+      pass_count++;
+    end
+    else begin
+      index++;
+      assert (memory[tr.addr] == tr.data) begin
+        if (debug_enabled)
           $display("read successful to address %0h with data %0h", tr.addr, tr.data);
-            pass_count++;
-                  end
-
-          else begin
-            $error("Read mismatch at address %0h: expected %0h, got %0h", tr.addr, memory[tr.addr], tr.data);
-            fail_count++;
-          end
+        pass_count++;
       end
+      else begin
+        $error("Read mismatch at address %0h: expected %0h, got %0h", tr.addr, memory[tr.addr], tr.data);
+        fail_count++;
+      end
+    end
 
-    endfunction
+  endfunction
   endclass : scb

@@ -1,0 +1,26 @@
+Command: /home/runner/./simv +vcs+lic+wait +test=write_same_address +NoTransactions=100000 -l output.log +DebugEnabled=0
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version U-2023.03-SP2_Full64; Runtime version U-2023.03-SP2_Full64;  Jul 31 02:58 2025
+argv = write_same_address
+SCB is running
+{Port B} agent ended :**************************** [            36388815] 
+{Port A} agent ended :**************************** [            36477105] 
+==========================
+SCB Statistics:
+Total Passes (Port A): 299614
+Total Failures (Port A): 0
+Pass Rate (Port A): 100.00%
+Total Passes (Port B): 299339
+Total Failures (Port B): 0
+Pass Rate (Port B): 100.00%
+Total Transactions: 598953
+Pass Rate: 100.00%
+Fail Rate: 0.00%
+==========================
+$finish called from file "basic_test.sv", line 23.
+$finish at simulation time             36478105
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 36478105 ns
+CPU Time:     50.080 seconds;       Data structure size:   0.0Mb
+Thu Jul 31 02:59:07 2025

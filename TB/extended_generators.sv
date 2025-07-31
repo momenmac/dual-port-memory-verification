@@ -1,83 +1,409 @@
-module tb;
-    logic clk;
-    logic rst_n;
-    string argv;
+class write_read_a_generator extends generator;
+    function new();
+        super.new();
+    endfunction
+
+    virtual task run();
+        if(state == project_pkg::ENABLED) begin
+            int count = TestRegistry::get_int("NoOfTransactions");
+            repeat (count) begin
+                randomize_transaction();
+                write();
+                randomize_transaction();
+                tr.addr = this.addr;
+                read();
+            end
+        end
+    endtask
+endclass
+
+
+class write_read_b_generator extends generator;
+    function new();
+        super.new();
+    endfunction
+
+    virtual task run();
+        if(state == project_pkg::ENABLED) begin
+            int count = TestRegistry::get_int("NoOfTransactions");
+            repeat (count) begin
+                randomize_transaction();
+                write();
+                randomize_transaction();
+                tr.addr = this.addr;
+                read();
+            end
+        end
+    endtask
+endclass
+
+class write_a_read_b_generator_a extends generator;
+    int counter;
+  bit [`ADDR_WIDTH- 1:0] addr_q [$];
+  	virtual dut_if vif;
+
+
+    function new();
+        super.new();
+        counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+		@(posedge vif.clk);
+        for(int i = 0; i < counter; i++) begin
+            randomize_transaction();
+            tr.addr = addr_q[i];
+          	tr.delay = 1;
+            write();
+        end
+    endtask
+endclass
+
+class write_a_read_b_generator_b extends generator;
+    int counter;
+  bit [`ADDR_WIDTH - 1:0] addr_q [$];
+  	virtual dut_if vif;
+
+    function new();
+        super.new();
+        counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+      repeat (2) @(posedge vif.clk);
+       for(int i = 0; i < counter; i++) begin
+            randomize_transaction();
+            tr.addr = addr_q[i];
+         	tr.delay =1;
+            read();
+        end
+    endtask
+endclass
+
+class write_b_read_a_generator_b extends generator;
+    // This gen is responsible for writing to port B
+    int counter;
+  bit [`ADDR_WIDTH - 1:0] addr_q [$];
+  	virtual dut_if vif;
+
+
+    function new();
+        super.new();
+        counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+		@(posedge vif.clk);
+        for(int i = 0; i < counter; i++) begin
+            randomize_transaction();
+            tr.addr = addr_q[i];
+          	tr.delay = 1;
+            write();
+        end
+    endtask
+endclass
+
+class write_b_read_a_generator_a extends generator;
+    // This gen is responsible for reading from port A
+    int counter;
+  	bit [`ADDR_WIDTH - 1:0] addr_q [$];
+  	virtual dut_if vif;
+
+    function new();
+        super.new();
+        counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+      repeat (2) @(posedge vif.clk);
+       for(int i = 0; i < counter; i++) begin
+            randomize_transaction();
+            tr.addr = addr_q[i];
+         	tr.delay =1;
+            read();
+        end
+    endtask
+endclass
+
+
+
+class write_same_address_generator extends generator;
+    int counter;
+
+    function new();
+        super.new();
+        counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+
+        repeat (counter) begin
+            randomize_transaction();
+            addr = tr.addr;
+            repeat ($urandom_range(1, 5)) begin
+                randomize_transaction();
+                tr.addr = addr;
+                write();
+                randomize_transaction();
+                tr.addr = addr; 
+                read();
+            end
+        end
+    endtask
+endclass
+
+
+class empty_mem_read_gen extends generator;
+    int counter;
+
+    function new();
+        super.new();
+        counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+        repeat (counter) begin
+            randomize_transaction();
+ 			tr.delay = 0;
+            read();
+        end
+    endtask
+endclass
+
+
+class fill_memory_gen extends generator;
+    int addr;
+  	int counter; 
+    function new();
+        super.new();
+        counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+        repeat (counter) begin
+          	for (int i = 0; i < `MEMORY_DEPTH; i++) begin
+                randomize_transaction();
+                tr.addr = i;
+                write();
+                randomize_transaction();
+                tr.addr = i;
+                read();
+            end
+          read_all_memory();
+        end
+    endtask
+
+endclass : fill_memory_gen
+
+class reset_behavior_gen extends generator;
   	event reset_event;
 
-    dut_if port_a_interface(clk, rst_n);
-    dut_if port_b_interface(clk, rst_n);
+    virtual dut_if vif;
+    int reset_delay;
+    int count, transaction_count;
 
-    dpram dut (
-        .data_a(port_a_interface.data),
-        .data_b(port_b_interface.data),
-        .addr_a(port_a_interface.addr),
-        .addr_b(port_b_interface.addr),
-        .we_a(port_a_interface.we),
-        .we_b(port_b_interface.we),
-        .clk(clk),
-        .rst_n(rst_n),
-        .valid_a(port_a_interface.valid),
-        .valid_b(port_b_interface.valid),
-        .ready_a(port_a_interface.ready),
-        .ready_b(port_b_interface.ready),
-        .q_a(port_a_interface.q),
-        .q_b(port_b_interface.q)
-    );
+    function new();
+        super.new();
+        this.count = TestRegistry::get_int("NoOfTransactions");
+    endfunction
 
-    initial begin
-        rst_n = 1'b1;
-        clk =0;
-        forever #5 clk = ~clk;
-    end
+    virtual task run();
+        repeat (count) begin
+            reset_delay = $urandom_range(10, 70);
+          	transaction_count = $urandom_range(1, `MEMORY_DEPTH);
 
-    task system_reset();
-        rst_n = 1'b0;
-        repeat (5) @(posedge clk);
-        rst_n = 1'b1;
-    endtask
-  
-  initial begin
-          $dumpfile("dump.vcd"); $dumpvars;
+            repeat (transaction_count) begin
+                    randomize_transaction();
+                    write();
+            end 
 
-  end
+            repeat (reset_delay) begin @(posedge vif.clk);
+            end
+            ->reset_event;
+            if(TestRegistry::get_int("DebugEnabled")) begin
+                $display("%t Reset event triggered after %0d transactions",$time, transaction_count);
+            end
+            read_all_memory();
 
-    initial begin
-        string test_name;
-        test t;
-      	int NoOfTransactions = 10;
-      	rst_n = 1'b0;
-
-      if($value$plusargs("test=%s", argv)) begin
-        $display("argv = %s", argv);
-            test_name = argv;
-        end else begin
-            $display("No test case specified, running default test.");
-            test_name = "default";
         end
-      
-      if($value$plusargs("NoTransactions=%s", argv))
-        NoOfTransactions = argv.atoi();
-        
-        
-        TestRegistry::set_int("NoOfTransactions", NoOfTransactions);
-
-      	t = test_factory::create_test(test_name);
-      	t.e0.reset_event = reset_event;
-      
-        t.e0.vif_a = port_a_interface;
-        t.e0.vif_b = port_b_interface;
-      
-      	repeat (5) @(posedge clk);
-      	system_reset();
-        t.run();
-    end
-
-  initial
-  	forever
-      begin
-        @(reset_event);
-        system_reset();
-    end
+    endtask
+endclass
 
 
-endmodule : tb
+class simultaneous_write_gen extends generator;
+    bit read_enable;
+    int counter;
+  
+    function new();
+        super.new();
+        read_enable = 0;
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+
+    virtual task run();
+        repeat (counter) begin
+          	
+            randomize_transaction();
+            write();
+        end
+        if(read_enable)
+            read_all_memory();
+    endtask
+
+endclass
+
+
+class simultaneous_read_gen extends generator;
+    bit write_enable;
+    int counter;
+    event write_done_event;
+
+    function new();
+        super.new();
+        write_enable = 0;
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+
+    virtual task run();
+        if(write_enable)
+        begin
+            write_all_memory();
+            ->write_done_event;
+        end
+        else
+            @write_done_event;
+
+        repeat (counter) begin
+            randomize_transaction();
+            read();
+        end
+
+    endtask
+
+endclass
+
+
+class sim_write_a_read_b_gen_a extends generator;
+    int counter;
+    int delay;
+    bit [`ADDR_WIDTH-1:0] addr_q [$];
+    virtual dut_if vif;
+
+    function new();
+        super.new();
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+        this.delay = TestRegistry::get_int("TransactionDelay");
+    endfunction
+
+    virtual task run();
+        for (int i = 0; i < counter; i++) begin
+            repeat(8) @(posedge vif.clk);
+            randomize_transaction();
+            tr.addr = addr_q[i];
+            tr.delay = this.delay;
+            write();
+        end
+    endtask
+endclass : sim_write_a_read_b_gen_a
+
+class sim_write_a_read_b_gen_b extends generator;
+    int counter;
+    int delay;
+    virtual dut_if vif;
+
+    bit [`ADDR_WIDTH-1:0] addr_q [$];
+
+    function new();
+        super.new();
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+        this.delay = TestRegistry::get_int("TransactionDelay");
+    endfunction
+
+    virtual task run();
+        for (int i = 0; i < counter; i++) begin
+            repeat(8) @(posedge vif.clk);
+            randomize_transaction();
+            tr.addr = addr_q[i];
+            tr.delay = this.delay;
+            read();
+        end
+    endtask
+endclass : sim_write_a_read_b_gen_b
+
+
+class sim_write_b_read_a_gen_b extends generator;
+    int counter;
+    int delay;
+    virtual dut_if vif;
+    bit [`ADDR_WIDTH-1:0] addr_q [$];
+
+    function new();
+        super.new();
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+        this.delay = TestRegistry::get_int("TransactionDelay");
+    endfunction
+
+    virtual task run();
+        for (int i = 0; i < counter; i++) begin
+            repeat(8) @(posedge vif.clk);
+            randomize_transaction();
+            tr.addr = addr_q[i];
+            tr.delay = this.delay;
+            write();
+        end
+    endtask
+endclass : sim_write_b_read_a_gen_b
+
+class sim_write_b_read_a_gen_a extends generator;
+    int counter;
+    int delay;
+    virtual dut_if vif;
+
+    bit [`ADDR_WIDTH-1:0] addr_q [$];
+
+    function new();
+        super.new();
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+        this.delay = TestRegistry::get_int("TransactionDelay");
+    endfunction
+
+    virtual task run();
+        for (int i = 0; i < counter; i++) begin
+            repeat(8) @(posedge vif.clk);
+            randomize_transaction();
+            tr.addr = addr_q[i];
+            tr.delay = this.delay;
+            read();
+        end
+    endtask
+endclass : sim_write_b_read_a_gen_a
+
+class write_collision_gen extends generator;
+    int counter;
+    int delay;
+    bit [`ADDR_WIDTH-1:0] addr_q [$];
+    bit enable_read;
+  	virtual dut_if vif;
+
+
+    function new();
+        super.new();
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+        this.delay = TestRegistry::get_int("TransactionDelay");
+        this.enable_read = 0; 
+    endfunction
+
+    virtual task run();
+        for (int i = 0; i < counter; i++) begin
+          repeat(8) @(posedge vif.clk);
+            randomize_transaction();
+            tr.addr = addr_q[i];
+            tr.delay = this.delay;
+            write();
+        end
+        if (enable_read)
+            read_all_memory();
+    endtask
+endclass : write_collision_gen

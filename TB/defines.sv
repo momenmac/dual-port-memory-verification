@@ -1,5 +1,7 @@
-`define MEMORY_SIZE 64
-`define MEMORY_WIDTH 8
+`define MEMORY_DEPTH 49152
+`define DATA_WIDTH 32
+`define ADDR_WIDTH 16
+
 
 
 typedef enum  { write_read_a, write_read_b, write_a_read_b, write_b_read_a, write_same_address, empty_memory_read, fill_memory, 

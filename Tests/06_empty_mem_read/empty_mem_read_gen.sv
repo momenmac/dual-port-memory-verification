@@ -9,6 +9,7 @@ class empty_mem_read_gen extends generator;
     virtual task run();
         repeat (counter) begin
             randomize_transaction();
+ 			tr.delay = 0;
             read();
         end
     endtask

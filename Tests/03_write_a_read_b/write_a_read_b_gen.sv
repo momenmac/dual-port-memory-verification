@@ -1,6 +1,6 @@
 class write_a_read_b_generator_a extends generator;
     int counter;
-    bit [$clog2(`MEMORY_SIZE) - 1:0] addr_q [$];
+  bit [`ADDR_WIDTH- 1:0] addr_q [$];
   	virtual dut_if vif;
 
 
@@ -22,7 +22,7 @@ endclass
 
 class write_a_read_b_generator_b extends generator;
     int counter;
-	bit [$clog2(`MEMORY_SIZE) - 1:0] addr_q [$];
+  bit [`ADDR_WIDTH - 1:0] addr_q [$];
   	virtual dut_if vif;
 
     function new();

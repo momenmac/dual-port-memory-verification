@@ -1,7 +1,8 @@
 class sim_write_b_read_a_gen_b extends generator;
     int counter;
     int delay;
-    bit [$clog2(`MEMORY_SIZE)-1:0] addr_q [$];
+    virtual dut_if vif;
+    bit [`ADDR_WIDTH-1:0] addr_q [$];
 
     function new();
         super.new();
@@ -11,19 +12,21 @@ class sim_write_b_read_a_gen_b extends generator;
 
     virtual task run();
         for (int i = 0; i < counter; i++) begin
+            repeat(8) @(posedge vif.clk);
             randomize_transaction();
             tr.addr = addr_q[i];
             tr.delay = this.delay;
             write();
         end
     endtask
-endclass : sim_write_b_read_a_gen_a
+endclass : sim_write_b_read_a_gen_b
 
-class sim_write_b_read_a_gen_b extends generator;
+class sim_write_b_read_a_gen_a extends generator;
     int counter;
     int delay;
+    virtual dut_if vif;
 
-    bit [$clog2(`MEMORY_SIZE)-1:0] addr_q [$];
+    bit [`ADDR_WIDTH-1:0] addr_q [$];
 
     function new();
         super.new();
@@ -33,10 +36,11 @@ class sim_write_b_read_a_gen_b extends generator;
 
     virtual task run();
         for (int i = 0; i < counter; i++) begin
+            repeat(8) @(posedge vif.clk);
             randomize_transaction();
             tr.addr = addr_q[i];
             tr.delay = this.delay;
             read();
         end
     endtask
-endclass : sim_write_b_read_a_gen_b
+endclass : sim_write_b_read_a_gen_a

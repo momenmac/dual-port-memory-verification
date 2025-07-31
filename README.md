@@ -199,8 +199,8 @@ TestRegistry::set_string("test_name", "write_read_a");  // Test selection
 
 ```systemverilog
 class transaction;
-    rand logic [`MEMORY_WIDTH-1:0] data;
-    rand logic [$clog2(`MEMORY_SIZE)-1:0] addr;
+    rand logic [`DATA_WIDTH-1:0] data;
+    rand logic [`ADDR_WIDTH-1:0] addr;
     rand logic we;
     // ... additional fields
 endclass

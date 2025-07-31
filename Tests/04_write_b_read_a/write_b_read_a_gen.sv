@@ -1,7 +1,8 @@
+
 class write_b_read_a_generator_b extends generator;
     // This gen is responsible for writing to port B
     int counter;
-    bit [$clog2(`MEMORY_SIZE) - 1:0] addr_q [$];
+  bit [`ADDR_WIDTH - 1:0] addr_q [$];
   	virtual dut_if vif;
 
 
@@ -24,7 +25,7 @@ endclass
 class write_b_read_a_generator_a extends generator;
     // This gen is responsible for reading from port A
     int counter;
-	bit [$clog2(`MEMORY_SIZE) - 1:0] addr_q [$];
+  	bit [`ADDR_WIDTH - 1:0] addr_q [$];
   	virtual dut_if vif;
 
     function new();
@@ -42,3 +43,4 @@ class write_b_read_a_generator_a extends generator;
         end
     endtask
 endclass
+

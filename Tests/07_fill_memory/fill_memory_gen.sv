@@ -1,7 +1,7 @@
+
 class fill_memory_gen extends generator;
     int addr;
-  	int counter;
-  
+  	int counter; 
     function new();
         super.new();
         counter = TestRegistry::get_int("NoOfTransactions");
@@ -9,7 +9,7 @@ class fill_memory_gen extends generator;
 
     virtual task run();
         repeat (counter) begin
-            for (int i = 0; i < `MEMORY_SIZE; i++) begin
+          	for (int i = 0; i < `MEMORY_DEPTH; i++) begin
                 randomize_transaction();
                 tr.addr = i;
                 write();
@@ -18,7 +18,7 @@ class fill_memory_gen extends generator;
                 read();
             end
         end
+        read_all_memory();
     endtask
 
 endclass : fill_memory_gen
-

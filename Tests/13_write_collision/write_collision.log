@@ -1,0 +1,29 @@
+Command: /home/runner/./simv +vcs+lic+wait +test=sim_write_b_read_a +NoTransactions=100000 -l output.log +DebugEnabled=0
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version U-2023.03-SP2_Full64; Runtime version U-2023.03-SP2_Full64;  Jul 31 05:04 2025
+Test Name: sim_write_b_read_a
+Transaction Count:      100000
+Transaction Delay:           1
+Generator Selected:          -1
+SCB is running
+{Port A} agent ended :**************************** [             2000055] 
+{Port B} agent ended :**************************** [             2000065] 
+==========================
+SCB Statistics:
+Total Passes (Port A): 100000
+Total Failures (Port A): 0
+Pass Rate (Port A): 100.00%
+Total Passes (Port B): 100000
+Total Failures (Port B): 0
+Pass Rate (Port B): 100.00%
+Total Transactions: 200000
+Pass Rate: 100.00%
+Fail Rate: 0.00%
+==========================
+$finish called from file "basic_test.sv", line 23.
+$finish at simulation time              2001065
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 2001065 ns
+CPU Time:      8.020 seconds;       Data structure size:   0.0Mb
+Thu Jul 31 05:04:42 2025

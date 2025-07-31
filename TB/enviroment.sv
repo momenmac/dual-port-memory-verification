@@ -6,6 +6,7 @@ class env;
     virtual dut_if vif_b;
     mailbox mon2scb_a;
     mailbox mon2scb_b;
+  	event reset_event;
 //     coverage_collector cov_collector;
 
     function new();

@@ -25,6 +25,7 @@ class generator;
         repeat (count) begin
             randomize_transaction();
             write();
+			randomize_transaction();
             read();
             index++;
         end
@@ -32,7 +33,7 @@ class generator;
     endtask
 
     task randomize_transaction();
-        assert (tr.randomize()) else begin
+      assert (tr.randomize() with {tr.addr < `MEMORY_DEPTH;}) else begin
             $error("[Gen] Randomization failed for transaction");
             return;
         end
@@ -56,9 +57,9 @@ class generator;
         tmp.print(port_name,"Generator", "Read Transaction", index);
         gen2drv.put(tmp);
     endtask
-
-    virtual task read_all_memory(int read_delay = -1);
-        for(int i = 0; i < `MEMORY_SIZE; i++) begin
+  
+  	 virtual task read_all_memory(int read_delay = -1);
+       for(int i = 0; i < `MEMORY_DEPTH; i++) begin
             randomize_transaction();
             tr.addr = i;
             if (read_delay >= 0)
@@ -68,7 +69,7 @@ class generator;
     endtask
 
     virtual task write_all_memory(int write_delay = -1);
-        for(int i = 0; i < `MEMORY_SIZE; i++) begin
+        for(int i = 0; i < `MEMORY_DEPTH; i++) begin
             randomize_transaction();
             tr.addr = i;
             if (write_delay >= 0)

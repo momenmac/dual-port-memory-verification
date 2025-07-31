@@ -7,21 +7,21 @@ module tb;
     dut_if port_a_interface(clk, rst_n);
     dut_if port_b_interface(clk, rst_n);
 
-    dpram dut (
-        .data_a(port_a_interface.data),
-        .data_b(port_b_interface.data),
+    DP_MEM dut (
+        .wr_data_a(port_a_interface.data),
+        .wr_data_b(port_b_interface.data),
         .addr_a(port_a_interface.addr),
         .addr_b(port_b_interface.addr),
-        .we_a(port_a_interface.we),
-        .we_b(port_b_interface.we),
+        .op_a(port_a_interface.we),
+        .op_b(port_b_interface.we),
         .clk(clk),
-        .rst_n(rst_n),
+        .rstn(rst_n),
         .valid_a(port_a_interface.valid),
         .valid_b(port_b_interface.valid),
         .ready_a(port_a_interface.ready),
         .ready_b(port_b_interface.ready),
-        .q_a(port_a_interface.q),
-        .q_b(port_b_interface.q)
+        .rd_data_a(port_a_interface.q),
+        .rd_data_b(port_b_interface.q)
     );
 
     initial begin
@@ -40,7 +40,6 @@ module tb;
           $dumpfile("dump.vcd"); $dumpvars;
 
   end
-
     initial begin
         string test_name;
         test t;
@@ -51,7 +50,6 @@ module tb;
       	rst_n = 1'b0;
 
       if($value$plusargs("test=%s", argv)) begin
-        $display("argv = %s", argv);
             test_name = argv;
         end else begin
             $display("No test case specified, running default test.");
@@ -65,15 +63,20 @@ module tb;
         transaction_delay = argv.atoi();
 
       if($value$plusargs("GenSelected=%s", argv))
-        this.gen_selected = argv.atoi();
+        gen_selected = argv.atoi();
 
       if($value$plusargs("DebugEnabled=%s", argv))
-        this.debug_enabled = argv.atoi();
+        debug_enabled = argv.atoi();
 
         TestRegistry::set_int("NoOfTransactions", transaction_count);
         TestRegistry::set_int("TransactionDelay", transaction_delay);
-        TestRegistry::set_int("DebugEnabled", this.debug_enabled);
-        TestRegistry::set_int("GenSelected", this.gen_selected);
+        TestRegistry::set_int("DebugEnabled",debug_enabled);
+        TestRegistry::set_int("GenSelected", gen_selected);
+
+        $display("Test Name: %s", test_name);
+        $display("Transaction Count: %d", transaction_count); 
+        $display("Transaction Delay: %d", transaction_delay);
+        $display("Generator Selected: %d", gen_selected);
 
       	t = test_factory::create_test(test_name);
       	t.e0.reset_event = reset_event;

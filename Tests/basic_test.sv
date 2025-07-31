@@ -18,7 +18,7 @@ class test;
         fork
             e0.run();
         join
-        #25;
+        #1000;
       	 e0.report_coverage();
       $finish;
       

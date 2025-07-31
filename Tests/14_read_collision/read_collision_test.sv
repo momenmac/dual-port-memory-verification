@@ -1,7 +1,7 @@
 class read_collision_test extends test;
     read_collision_gen gen_a;
     read_collision_gen gen_b;
-    bit [$clog2(`MEMORY_SIZE)-1:0] addr_q [$];
+  	bit [`ADDR_WIDTH-1:0] addr_q [$];
     int counter;
     int addr;
     int gen_selected_write;
@@ -29,14 +29,17 @@ class read_collision_test extends test;
             this.gen_b.enable_write = 1;
 
         repeat (this.counter) begin
-            this.addr = $urandom_range(0, `MEMORY_SIZE - 1);
+            this.addr = $urandom_range(0, `MEMORY_DEPTH - 1);
             this.addr_q.push_back(this.addr);
         end
 
         this.gen_a.addr_q = this.addr_q;
         this.gen_b.addr_q = this.addr_q;
 
-        env0.agent_a.set_generator(this.gen_a);
-        env0.agent_b.set_generator(this.gen_b);
+        this.gen_a.vif = e0.vif_a;
+        this.gen_b.vif = e0.vif_b;
+
+        e0.agent_a.set_generator(this.gen_a);
+        e0.agent_b.set_generator(this.gen_b);
     endtask
 endclass

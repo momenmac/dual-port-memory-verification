@@ -1,0 +1,41 @@
+Command: /home/runner/./simv +vcs+lic+wait +test=out_of_range_access +NoTransactions=1 -l output.log +DebugEnabled=0
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version U-2023.03-SP2_Full64; Runtime version U-2023.03-SP2_Full64;  Jul 31 08:28 2025
+Test Name: out_of_range_access
+Transaction Count:           1
+Transaction Delay:           1
+Generator Selected:          -1
+SCB is running
+{Port B} agent ended :**************************** [                  95] 
+Error: "scoreboard.sv", 83: project_pkg::\scb::check_transaction : at time 105 ns
+Error: Address out of bounds: e8c9
+Error: "scoreboard.sv", 83: project_pkg::\scb::check_transaction : at time 115 ns
+Error: Address out of bounds: e2e0
+"scoreboard.sv", 97: project_pkg::\scb::check_transaction .unnamed$$_0: started at 536565ns failed at 536565ns
+	Offending '(this.memory[tr.addr] == tr.data)'
+Error: "scoreboard.sv", 97: project_pkg.scb::check_transaction.unnamed$$_0: at time 536565 ns
+Read mismatch at address 22e0: expected 0, got adab763a
+"scoreboard.sv", 97: project_pkg::\scb::check_transaction .unnamed$$_0: started at 625645ns failed at 625645ns
+	Offending '(this.memory[tr.addr] == tr.data)'
+Error: "scoreboard.sv", 97: project_pkg.scb::check_transaction.unnamed$$_0: at time 625645 ns
+Read mismatch at address 28c9: expected 0, got 97a459e3
+{Port A} agent ended :**************************** [             2950535] 
+==========================
+SCB Statistics:
+Total Passes (Port A): 49150
+Total Failures (Port A): 3
+Pass Rate (Port A): 99.99%
+Total Passes (Port B): 0
+Total Failures (Port B): 1
+Pass Rate (Port B): 0.00%
+Total Transactions: 49154
+Pass Rate: 99.99%
+Fail Rate: 0.01%
+==========================
+$finish called from file "basic_test.sv", line 23.
+$finish at simulation time              2951535
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 2951535 ns
+CPU Time:      2.930 seconds;       Data structure size:   0.0Mb
+Thu Jul 31 08:28:20 2025

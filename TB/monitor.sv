@@ -21,6 +21,7 @@ class monitor;
                     tr.data = vif.data;
                     tr.print(port_name,"Monitor", "Transaction (Write)", index);
                 end else begin
+//                   @(posedge vif.clk);
                     tr.data = vif.q; // Read operation, data is not used
                     tr.print(port_name,"Monitor", "Transaction (Read)", index);
 					index++;
