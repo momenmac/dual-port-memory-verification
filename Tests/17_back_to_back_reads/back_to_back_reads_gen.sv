@@ -1,4 +1,4 @@
-class back_to_back_writes_gen extends generator;
+class back_to_back_reads_gen extends generator;
     function new();
         super.new();
     endfunction
@@ -6,12 +6,13 @@ class back_to_back_writes_gen extends generator;
     virtual task run();
         if(state == project_pkg::ENABLED) begin
             int count = TestRegistry::get_int("NoOfTransactions");
-            repeat (count) begin
+            write_all_memory();
+            for (int i = 0; i < count; i++) begin
                 randomize_transaction();
-              	tr.delay = 0;
-                write();
+                if(i+1 < count) // Last transaction will get a random delay
+                    tr.delay = 0; 
+                read();
             end
-            read_all_memory();
         end
     endtask
 endclass

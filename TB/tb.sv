@@ -32,7 +32,7 @@ module tb;
 
     task system_reset();
         rst_n = 1'b0;
-        repeat (5) @(posedge clk);
+        repeat ($urandom_range(5, 30)) @(posedge clk);
         rst_n = 1'b1;
     endtask
   
@@ -84,8 +84,9 @@ module tb;
         t.e0.vif_a = port_a_interface;
         t.e0.vif_b = port_b_interface;
       
-      	repeat (5) @(posedge clk);
+      	repeat ($urandom_range(5, 30)) @(posedge clk);
       	system_reset();
+        repeat ($urandom_range(0, 30)) @(posedge clk);
         t.run();
     end
 

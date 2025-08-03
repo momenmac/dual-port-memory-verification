@@ -288,7 +288,7 @@ endclass
 class sim_write_a_read_b_gen_a extends generator;
     int counter;
     int delay;
-    bit [`ADDR_WIDTH-1:0] addr_q [$];
+  	bit [`ADDR_WIDTH-1:0] addr_q [$];
     virtual dut_if vif;
 
     function new();
@@ -313,7 +313,7 @@ class sim_write_a_read_b_gen_b extends generator;
     int delay;
     virtual dut_if vif;
 
-    bit [`ADDR_WIDTH-1:0] addr_q [$];
+  bit [`ADDR_WIDTH-1:0] addr_q [$];
 
     function new();
         super.new();
@@ -337,7 +337,7 @@ class sim_write_b_read_a_gen_b extends generator;
     int counter;
     int delay;
     virtual dut_if vif;
-    bit [`ADDR_WIDTH-1:0] addr_q [$];
+  bit [`ADDR_WIDTH-1:0] addr_q [$];
 
     function new();
         super.new();
@@ -361,7 +361,7 @@ class sim_write_b_read_a_gen_a extends generator;
     int delay;
     virtual dut_if vif;
 
-    bit [`ADDR_WIDTH-1:0] addr_q [$];
+  bit [`ADDR_WIDTH-1:0] addr_q [$];
 
     function new();
         super.new();
@@ -383,7 +383,7 @@ endclass : sim_write_b_read_a_gen_a
 class write_collision_gen extends generator;
     int counter;
     int delay;
-    bit [`ADDR_WIDTH-1:0] addr_q [$];
+  bit [`ADDR_WIDTH-1:0] addr_q [$];
     bit enable_read;
   	virtual dut_if vif;
 
@@ -402,8 +402,133 @@ class write_collision_gen extends generator;
             tr.addr = addr_q[i];
             tr.delay = this.delay;
             write();
+          	
         end
         if (enable_read)
             read_all_memory();
     endtask
 endclass : write_collision_gen
+
+
+class read_collision_gen extends generator;
+    int counter;
+    event write_done_event;
+  	bit [`ADDR_WIDTH-1:0] addr_q [$];
+    bit enable_write;
+    int delay;
+    virtual dut_if vif;
+
+    function new();
+        super.new();
+        enable_write = 0;
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+    virtual task run();
+        if(enable_write)
+        begin
+            write_all_memory();
+            ->write_done_event;
+        end
+        else
+          @(write_done_event);
+      
+      repeat(20) @(posedge vif.clk);
+
+        for (int i = 0; i < counter; i++) begin
+            repeat(8) @(posedge vif.clk);
+            randomize_transaction();
+            tr.addr = addr_q[i];
+          	tr.delay = 1;
+            read();
+        end
+
+    endtask
+endclass : read_collision_gen
+
+
+
+class out_of_range_access_gen extends generator;
+    bit read_enable;
+    int counter;
+
+    function new();
+        super.new();
+        read_enable = 0;
+        this.counter = TestRegistry::get_int("NoOfTransactions");
+    endfunction
+
+
+    virtual task run();
+        repeat (counter) begin
+            tr.randomize() with {
+                tr.addr >= `MEMORY_DEPTH;
+            };
+
+            write();
+        end
+        if(read_enable)
+            read_all_memory();
+    endtask
+
+endclass
+
+class back_to_back_writes_gen extends generator;
+    function new();
+        super.new();
+    endfunction
+
+    virtual task run();
+        if(state == project_pkg::ENABLED) begin
+            int count = TestRegistry::get_int("NoOfTransactions");
+            repeat (count) begin
+                randomize_transaction();
+              	tr.delay = 0;
+                write();
+            end
+            read_all_memory();
+        end
+    endtask
+endclass
+
+class back_to_back_reads_gen extends generator;
+    function new();
+        super.new();
+    endfunction
+
+    virtual task run();
+        if(state == project_pkg::ENABLED) begin
+            int count = TestRegistry::get_int("NoOfTransactions");
+            write_all_memory();
+            for (int i = 0; i < count; i++) begin
+                randomize_transaction();
+                if(i+1 < count) // Last transaction will get a random delay
+                    tr.delay = 0; 
+                read();
+            end
+        end
+    endtask
+endclass
+
+
+class back_to_back_transactions_gen extends generator;
+    function new();
+        super.new();
+    endfunction
+
+    virtual task run();
+        if(state == project_pkg::ENABLED) begin
+            int count = TestRegistry::get_int("NoOfTransactions");
+            write_all_memory();
+            for (int i = 0; i < count; i++) begin
+                randomize_transaction();
+                if(i+1 < count) // Last transaction will get a random delay
+                    tr.delay = 0;
+                if($urandom_range(0, 1) == 1) // Randomly choose to write or read
+                    write();
+                else
+                    read();
+            end
+        end
+    endtask
+endclass

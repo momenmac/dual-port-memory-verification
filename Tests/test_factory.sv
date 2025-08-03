@@ -19,6 +19,8 @@ class test_factory;
       "read_collision": t = read_collision_test::new();
       "out_of_range_access": t = out_of_range_access_test::new();
       "back_to_back_writes": t = back_to_back_writes_test::new();
+      "back_to_back_reads": t = back_to_back_reads_test::new();
+      "back_to_back_transactions": t = back_to_back_transactions_test::new();
       default: t= new();
     endcase
     return t;

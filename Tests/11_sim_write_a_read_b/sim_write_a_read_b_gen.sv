@@ -12,11 +12,11 @@ class sim_write_a_read_b_gen_a extends generator;
 
     virtual task run();
         for (int i = 0; i < counter; i++) begin
-            repeat(8) @(posedge vif.clk);
+            repeat(16) @(posedge vif.clk);
             randomize_transaction();
             tr.addr = addr_q[i];
             tr.delay = this.delay;
-            write();
+            write(); 
         end
     endtask
 endclass : sim_write_a_read_b_gen_a
@@ -36,7 +36,7 @@ class sim_write_a_read_b_gen_b extends generator;
 
     virtual task run();
         for (int i = 0; i < counter; i++) begin
-            repeat(8) @(posedge vif.clk);
+            repeat(16) @(posedge vif.clk);
             randomize_transaction();
             tr.addr = addr_q[i];
             tr.delay = this.delay;

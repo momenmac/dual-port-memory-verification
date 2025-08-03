@@ -24,7 +24,7 @@ class read_collision_gen extends generator;
       repeat(20) @(posedge vif.clk);
 
         for (int i = 0; i < counter; i++) begin
-            repeat(8) @(posedge vif.clk);
+            repeat(18) @(posedge vif.clk);
             randomize_transaction();
             tr.addr = addr_q[i];
           	tr.delay = 1;

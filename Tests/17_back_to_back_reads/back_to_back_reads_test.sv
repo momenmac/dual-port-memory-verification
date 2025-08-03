@@ -1,8 +1,8 @@
-class back_to_back_writes_test extends test;
-  	back_to_back_writes_gen gen;
+class back_to_back_reads_test extends test;
+  	back_to_back_reads_gen gen;
     int gen_selected;
 
-    function new(string name = "back_to_back_writes_test");
+    function new(string name = "back_to_back_reads_test");
         super.new(name);
     	gen = new();
         this.gen_selected = TestRegistry::get_int("GenSelected");
