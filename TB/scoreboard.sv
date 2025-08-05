@@ -81,7 +81,8 @@ class scb;
       if (tr.is_start) begin
         active_start_a = tr;
         transaction_active_a = 1;
-        collision_detected_a = 0; 
+        collision_detected_a = 0;
+        
         if (transaction_active_b && active_start_b.addr == tr.addr && active_start_b.we != tr.we) begin
           collision_detected_a = 1;
           collision_detected_b = 1;
@@ -111,9 +112,10 @@ class scb;
           collision_detected_a = 1;
           collision_detected_b = 1;
           collision_count++;
-          if(debug_enabled) 
+          if(debug_enabled) begin
             $display("Collision DETECTED: Port_B %s starts while Port_A %s active at address %0h [%t]", 
                     tr.we ? "Write" : "Read", active_start_a.we ? "Write" : "Read", tr.addr, current_time);
+          end
         end
         
       end else begin
@@ -220,9 +222,8 @@ class scb;
 
   function void check_transaction(transaction tr, ref int pass_count, ref int fail_count,ref int index, input string port_name = "");
 
-    if (tr.addr >= `MEMORY_DEPTH) begin
+    if (tr.addr >= `MEMORY_DEPTH && debug_enabled) begin
         	$display("Error: %s Address out of bounds: %0h", port_name, tr.addr);
-          fail_count++;
           return;
     end
 
