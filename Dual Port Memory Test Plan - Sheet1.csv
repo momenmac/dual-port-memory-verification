@@ -75,10 +75,3 @@ It gets the right data",back_to_back_reads,Done,Passed,test=back_to_back_reads +
 Back to Back Transactions,"Ensure that memory can handle continuous transactions from different ports
 Random operation read or write
 check if the operations were done successfully",back_to_back_transactions,Done,Passed,test=back_to_back_transactions +NoTransactions=100000 -l output.log +DebugEnabled=0,
-Address Boundaries,"Ensure all addresses accessible, no wraparound
-Write/read address MIN_SIZE, MAX_SIZE,",address_boundaries,Cacnelled,,,
-Delays,"Ensure delays won't affect different operations on the memory
-Write data to a random addess
-Wait for a few cycles 
-Read data from the same address
-Read data should match the written one ",delays,Cacnelled,,  ,

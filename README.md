@@ -119,33 +119,28 @@ dual-port-memory-verification/
 
 ## 🧪 Test Plan & Coverage
 
-### Implemented Tests ✅
+### Completed Tests ✅
 
-| Test Case              | Description                            | Status  |
-| ---------------------- | -------------------------------------- | ------- |
-| **write_read_a**       | Basic write/read operations on port A  | ✅ Done |
-| **write_read_b**       | Basic write/read operations on port B  | ✅ Done |
-| **write_a_read_b**     | Write port A, read port B (cross-port) | ✅ Done |
-| **write_b_read_a**     | Write port B, read port A (cross-port) | ✅ Done |
-| **write_same_address** | Multiple writes to same address        | ✅ Done |
-| **empty_mem_read**     | Read from uninitialized memory         | ✅ Done |
-| **fill_memory**        | Fill entire memory space               | ✅ Done |
-| **reset_behavior**     | Reset functionality verification       | ✅ Done |
-
-### Pending Tests 🚧
-
-| Test Case                         | Description                          | Status     |
-| --------------------------------- | ------------------------------------ | ---------- |
-| **simultaneous_write**            | Concurrent writes on different ports | 🚧 Pending |
-| **simultaneous_read**             | Concurrent reads on different ports  | 🚧 Pending |
-| **read_after_write_same_address** | RAW hazard testing                   | 🚧 Pending |
-| **write_collision**               | Write collision arbitration          | 🚧 Pending |
-| **out_of_range_access**           | Out-of-bounds address handling       | 🚧 Pending |
-| **back_to_back_writes**           | Consecutive write operations         | 🚧 Pending |
-| **back_to_back_reads**            | Consecutive read operations          | 🚧 Pending |
-| **back_to_back_transactions**     | Mixed consecutive operations         | 🚧 Pending |
-| **address_boundaries**            | Boundary address testing             | 🚧 Pending |
-| **delays**                        | Delayed operation handling           | 🚧 Pending |
+| Test Case                     | Description                                        | Status   | Result  |
+| ----------------------------- | -------------------------------------------------- | -------- | ------- |
+| **write_read_a**              | Basic write/read operations on port A             | ✅ Done  | ✅ Pass |
+| **write_read_b**              | Basic write/read operations on port B             | ✅ Done  | ✅ Pass |
+| **write_a_read_b**            | Write port A, read port B (cross-port)            | ✅ Done  | ✅ Pass |
+| **write_b_read_a**            | Write port B, read port A (cross-port)            | ✅ Done  | ✅ Pass |
+| **write_same_address**        | Multiple writes to same address                    | ✅ Done  | ✅ Pass |
+| **empty_mem_read**            | Read from uninitialized memory                    | ✅ Done  | ✅ Pass |
+| **fill_memory**               | Fill entire memory space                          | ✅ Done  | ✅ Pass |
+| **reset_behavior**            | Reset functionality verification                   | ✅ Done  | ✅ Pass |
+| **simultaneous_write**        | Concurrent writes on different ports              | ✅ Done  | ✅ Pass |
+| **simultaneous_read**         | Concurrent reads on different ports               | ✅ Done  | ✅ Pass |
+| **sim_write_a_read_b**        | Simultaneous write port A, read port B           | ✅ Done  | ✅ Pass |
+| **sim_write_b_read_a**        | Simultaneous write port B, read port A           | ✅ Done  | ✅ Pass |
+| **write_collision**           | Write collision arbitration                       | ✅ Done  | ✅ Pass |
+| **read_collision**            | Read collision handling                           | ✅ Done  | ✅ Pass |
+| **out_of_range_access**       | Out-of-bounds address handling                    | ✅ Done  | ✅ Pass |
+| **back_to_back_writes**       | Consecutive write operations (Port A & B)        | ✅ Done  | ✅ Pass |
+| **back_to_back_reads**        | Consecutive read operations (Port A & B)         | ✅ Done  | ✅ Pass |
+| **back_to_back_transactions** | Mixed consecutive operations                      | ✅ Done  | ✅ Pass |
 
 ## 🚀 Getting Started
 
@@ -193,6 +188,29 @@ TestRegistry::set_int("NoOfTransactions", 100);  // Number of transactions
 TestRegistry::set_string("test_name", "write_read_a");  // Test selection
 ```
 
+#### Test-Specific Configurations
+
+Different tests use different transaction counts based on their complexity:
+
+```bash
+# High-intensity tests (100,000 transactions)
++test=write_read_a +NoTransactions=100000
++test=simultaneous_write +NoTransactions=100000
++test=back_to_back_writes +NoTransactions=100000
+
+# Medium-intensity tests (10,000 transactions)  
++test=write_same_address +NoTransactions=10000
++test=empty_mem_read +NoTransactions=10000
+
+# Low-intensity tests (5-10 transactions)
++test=fill_memory +NoTransactions=5
++test=reset_behavior +NoTransactions=10
+
+# Port selection for back-to-back tests
++GenSelected=0  # Port A
++GenSelected=1  # Port B
+```
+
 ## 🔧 Key Features
 
 ### 1. Transaction-Level Modeling
@@ -229,6 +247,24 @@ The DUT implements valid/ready handshake:
 
 ## 📊 Verification Metrics
 
+### Current Status
+- **Tests Completed**: 18/20 (90%)
+- **Tests Passed**: 18/18 (100%)
+- **Tests Cancelled**: 2/20 (10%)
+
+### Known Issues
+Based on testing, the following issues were identified:
+
+#### Port A Write/Read Test:
+- `ready_a` is high but `rd_data_a` shows XXXX initially
+- Memory has 1 cycle read delay: ready=1, valid=1 but data comes next cycle
+
+#### Simultaneous Write B Read A Test:
+- When port B writes and port A reads same address simultaneously, port A gets old value instead of new one
+
+#### Out of Range Access Test:
+- Out-of-range memory access corrupts valid addresses
+
 ### Coverage Goals
 
 - **Functional Coverage**: 95%+ coverage of all defined coverpoints
@@ -237,10 +273,10 @@ The DUT implements valid/ready handshake:
 
 ### Success Criteria
 
-- All implemented tests pass
-- No protocol violations
-- Coverage goals achieved
-- Zero unintended memory corruption
+- ✅ All implemented tests pass (18/18)
+- ⚠️ Some protocol violations identified and documented
+- 🔄 Coverage goals in progress
+- ⚠️ Memory corruption issues documented for out-of-range access
 
 ## 🤝 Contributing
 
@@ -260,8 +296,25 @@ The DUT implements valid/ready handshake:
 
 ## 📝 Test Plan Status
 
-Current implementation status: **20/20 tests completed (100%)**
-See `Dual Port Memory Test Plan - Sheet1.csv` for detailed test descriptions and current status.
+**Current implementation status: 18/20 tests completed (90%)**
+- **Passed**: 18 tests ✅
+- **Cancelled**: 2 tests (address_boundaries, delays) ❌
+- **Success Rate**: 100% for completed tests
+
+See `Dual Port Memory Test Plan - Sheet1.csv` for detailed test descriptions, run options, and identified bugs.
+
+### Test Execution Examples
+
+```bash
+# Basic port A write/read test
+vsim +test=write_read_a +NoTransactions=100000 -l output.log +DebugEnabled=0
+
+# Simultaneous operations test
+vsim +test=simultaneous_write +NoTransactions=100000 -l output.log +DebugEnabled=0
+
+# Back-to-back operations with port selection
+vsim +test=back_to_back_writes +NoTransactions=100000 -l output.log +DebugEnabled=0 +GenSelected=0
+```
 
 ## 📜 License
 
